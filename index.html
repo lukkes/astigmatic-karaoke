@@ -44,13 +44,13 @@
         .correct {
             color: #00ff00; /* Green text for correct lines */
         }
-        /* Correct indicator styling: shows only the percentage with extra padding */
+        /* Updated correct indicator styling: shows only the percentage and is aligned to the right */
         .correct-indicator {
             font-size: 0.8em;
             border: 1px solid #00ff00;
             padding: 4px 6px;
-            margin-left: 10px;
             border-radius: 3px;
+            float: right;
         }
         button {
             margin-top: 10px;
@@ -194,6 +194,7 @@
         }
     }
 
+    // Modified moveHighlight function (from previous update)
     function moveHighlight(direction) {
         let lineElements = [...document.querySelectorAll(".line")].filter(line => line.innerText);
 
@@ -226,16 +227,11 @@
             let targetLine = lineElements[currentLineIndex];
             let offset = targetLine.offsetTop - lyricsContainer.offsetTop; // Calculate the top offset of the target line
             highlight.style.transform = `translateY(${offset}px)`; // Move the highlight to the target line
-            // Scroll to center the target line in the container
-            // let containerHeight = lyricsContainer.clientHeight;
-            // let targetCenter = offset + targetLine.clientHeight / 2;
-            // lyricsContainer.scrollTop = targetCenter - containerHeight / 2;\
-
             window.scrollTo({
                 top: targetLine.offsetTop - 200,
                 left: 0,
                 behavior: "smooth",
-            })
+            });
         }
     }
 
@@ -258,7 +254,8 @@
                 let percentage = Math.round((correctCount / totalLines) * 100);
                 let indicatorSpan = document.createElement("span");
                 indicatorSpan.classList.add("correct-indicator");
-                indicatorSpan.innerHTML = `<strong>${percentage}% correct</strong>`;
+                // Updated: Only display the percentage (e.g., "70%")
+                indicatorSpan.innerHTML = `<strong>${percentage}%</strong>`;
                 currentLine.appendChild(indicatorSpan);
             }
         }
