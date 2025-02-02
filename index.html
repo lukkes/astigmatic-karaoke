@@ -76,7 +76,8 @@
             background-color: #2a2a2a;
             color: #e0e0e0;
         }
-        .slider-container {
+        /* Container for the difficulty buttons */
+        #blurButtons {
             margin-top: 10px;
         }
         .line {
@@ -112,12 +113,13 @@
 <!-- Input Phase -->
 <div id="input-phase">
     <textarea id="inputLyrics" placeholder="Enter your lyrics here..."></textarea>
-    <div class="slider-container">
-        <label for="blurPercentage">Blur Percentage: <span id="blurValue">30</span>%</label>
-        <input type="range" id="blurPercentage" min="10" max="100" value="30" oninput="updateBlurValue()">
+    <!-- Difficulty buttons replacing the slider -->
+    <div id="blurButtons">
+        <button class="button-primary" onclick="startBlurring('easy')">Easy</button>
+        <button class="button-primary" onclick="startBlurring('medium')">Medium</button>
+        <button class="button-primary" onclick="startBlurring('hard')">Hard</button>
+        <button class="button-primary" onclick="startBlurring('blind')">Blind</button>
     </div>
-    <br>
-    <button class="button-primary" onclick="startBlurring()">Blur Words</button>
 </div>
 <!-- Blurred Phase -->
 <div id="blurred-phase" class="hidden">
@@ -133,34 +135,53 @@
     let currentLineIndex = -1; // Start above the first line
     let lines = [];
     let correctCount = 0;      // Count of correctly marked lines
-    let spaceHeld = false;     // True if space bar is currently held
+    let spaceHeld = false;     // True if the space bar is held
     let navDirection = 0;      // 1 for S (down), -1 for W (up)
 
-    // Update the displayed blur percentage.
-    function updateBlurValue() {
-        document.getElementById("blurValue").innerText =
-            document.getElementById("blurPercentage").value;
-    }
-
-    // Process the input lyrics, randomly blur words, and switch phases.
-    function startBlurring() {
+    // Process the input lyrics, apply blur based on difficulty, and switch phases.
+    function startBlurring(difficulty) {
         let inputText = document.getElementById("inputLyrics").value;
-        let blurPercent = parseInt(document.getElementById("blurPercentage").value, 10);
         if (inputText.trim() === "") {
             alert("Please enter lyrics before blurring.");
             return;
         }
+
+        // Determine blur percentage based on difficulty.
+        let blurPercent;
+        if (difficulty === "easy") {
+            // Random integer between 20 and 40.
+            blurPercent = Math.floor(Math.random() * (40 - 20 + 1)) + 20;
+        } else if (difficulty === "medium") {
+            blurPercent = Math.floor(Math.random() * (60 - 40 + 1)) + 40;
+        } else if (difficulty === "hard") {
+            blurPercent = Math.floor(Math.random() * (80 - 60 + 1)) + 60;
+        } else if (difficulty === "blind") {
+            blurPercent = 100;
+        }
+
         correctCount = 0;
         lines = inputText.split("\n");
         let processedLines = lines.map(line => {
-            let words = line.split(/(\s+)/); // Preserve spaces
-            let numBlurred = Math.floor(words.length * (blurPercent / 100));
-            for (let i = 0; i < numBlurred; i++) {
-                let index = Math.floor(Math.random() * words.length);
-                if (words[index].trim() !== "") {
-                    words[index] = `<span class="blurred">${words[index]}</span>`;
+            // Split the line while preserving spaces.
+            let words = line.split(/(\s+)/);
+            // Collect indices of non-space tokens.
+            let nonSpaceIndices = [];
+            for (let i = 0; i < words.length; i++) {
+                if (words[i].trim() !== "") {
+                    nonSpaceIndices.push(i);
                 }
             }
+            let totalWords = nonSpaceIndices.length;
+            // Calculate how many words to blur.
+            let numBlurred = Math.floor(totalWords * (blurPercent / 100));
+            // Shuffle the indices array.
+            let shuffledIndices = nonSpaceIndices.sort(() => Math.random() - 0.5);
+            // Choose the first numBlurred indices.
+            let indicesToBlur = shuffledIndices.slice(0, numBlurred);
+            // Wrap the chosen words in the blurred span.
+            indicesToBlur.forEach(index => {
+                words[index] = `<span class="blurred">${words[index]}</span>`;
+            });
             return `<span class="line">${words.join("")}</span>`;
         });
         document.getElementById("lyrics").innerHTML = processedLines.join("<br>");
@@ -212,7 +233,7 @@
             let lineElements = [...document.querySelectorAll(".line")].filter(line => line.innerText);
             if (currentLineIndex >= 0 && currentLineIndex < lineElements.length) {
                 let currentLine = lineElements[currentLineIndex];
-                // Only process Enter if the current line is fully unblurred.
+                // Process Enter only if the current line is fully unblurred.
                 if (!currentLine.querySelector('.blurred')) {
                     markCurrentLineCorrect();
                     moveHighlight(1);
