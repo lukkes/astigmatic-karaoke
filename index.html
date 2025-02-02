@@ -44,7 +44,7 @@
         .correct {
             color: #00ff00; /* Green text for correct lines */
         }
-        /* Updated correct indicator styling: shows only the percentage and is aligned to the right */
+        /* Correct indicator styling: only the percentage, aligned right */
         .correct-indicator {
             font-size: 0.8em;
             border: 1px solid #00ff00;
@@ -57,7 +57,7 @@
             padding: 10px 15px;
             font-size: 1em;
             border: none;
-            background: #5e5eff; /* Futuristic button color */
+            background: #5e5eff; /* Button color */
             color: white;
             border-radius: 5px;
             cursor: pointer;
@@ -92,7 +92,7 @@
             height: 3px;
             background: #FF33FF; /* Bright color for highlight */
             left: 0;
-            top: 60px; /* Set initial position */
+            top: 60px; /* Initial position */
             transform: translateY(-1.5em);
             transition: transform 0.3s ease-in-out;
         }
@@ -102,8 +102,8 @@
             background: linear-gradient(to bottom, #6A0DAF, #A020F0);
         }
         .button-primary {
-            background-color: #5E5EFF; /* Button color */
-            color: #FFFFFF; /* White text for buttons */
+            background-color: #5E5EFF;
+            color: #FFFFFF;
             border: none;
             border-radius: 5px;
             padding: 10px 15px;
@@ -126,20 +126,26 @@
 <div id="blurred-phase" class="hidden">
     <div class="lyrics-container" id="lyrics-container">
         <div id="lyrics"></div>
-        <div class="highlight" id="highlight"></div> <!-- Line position indicator -->
+        <div class="highlight" id="highlight"></div>
     </div>
     <br>
     <button class="button-primary" onclick="goBack()">Go Back</button>
 </div>
 <script>
+    // Global variables
     let currentLineIndex = -1; // Start above the first line
     let lines = [];
     let correctCount = 0; // Count of correctly marked lines
+    let spaceHeld = false;  // Tracks if the space bar is currently held
+    let navDirection = 0;   // 1 for S (down), -1 for W (up)
 
+    // Update the displayed blur percentage
     function updateBlurValue() {
-        document.getElementById("blurValue").innerText = document.getElementById("blurPercentage").value;
+        document.getElementById("blurValue").innerText =
+            document.getElementById("blurPercentage").value;
     }
 
+    // Process the input lyrics, apply blur randomly, and switch phases
     function startBlurring() {
         let inputText = document.getElementById("inputLyrics").value;
         let blurPercent = parseInt(document.getElementById("blurPercentage").value, 10);
@@ -147,9 +153,9 @@
             alert("Please enter lyrics before blurring.");
             return;
         }
-        // Reset correct count when starting a new session.
+        // Reset correct count and split lines
         correctCount = 0;
-        lines = inputText.split("\n"); // Split into lines
+        lines = inputText.split("\n");
         let processedLines = lines.map(line => {
             let words = line.split(/(\s+)/); // Preserve spaces
             let numBlurred = Math.floor(words.length * (blurPercent / 100));
@@ -164,69 +170,113 @@
         document.getElementById("lyrics").innerHTML = processedLines.join("<br>");
         currentLineIndex = -1; // Start above the first line
         updateHighlightPosition();
-        // Switch to Blurred Phase
+        // Switch to the Blurred Phase
         document.getElementById("input-phase").classList.add("hidden");
         document.getElementById("blurred-phase").classList.remove("hidden");
         document.addEventListener("keydown", handleKeyPress);
+        document.addEventListener("keyup", handleKeyUp);
     }
 
+    // Return to the input phase
     function goBack() {
         document.getElementById("input-phase").classList.remove("hidden");
         document.getElementById("blurred-phase").classList.add("hidden");
         document.removeEventListener("keydown", handleKeyPress);
+        document.removeEventListener("keyup", handleKeyUp);
     }
 
+    // Handle keydown events
     function handleKeyPress(event) {
-        // Use "s" for moving down, "w" for moving up, "Enter" for marking the current line, and "Space" for marking and moving down.
+        // Prevent auto-repeat for space, s, and w to avoid multiple triggers.
+        if ((event.key === " " || event.key === "s" || event.key === "w") && event.repeat) {
+            event.preventDefault();
+            return;
+        }
+
         if (event.key === "s") {
             event.preventDefault();
-            moveHighlight(1);
+            // If no navigation key is active, use S (down)
+            if (navDirection === 0) {
+                navDirection = 1;
+                unblurCurrentLine();
+            }
         } else if (event.key === "w") {
             event.preventDefault();
-            moveHighlight(-1);
-        } else if (event.key === "Enter") {
-            event.preventDefault();
-            markCurrentLineCorrect();
+            // If no navigation key is active, use W (up)
+            if (navDirection === 0) {
+                navDirection = -1;
+                unblurCurrentLine();
+            }
         } else if (event.key === " ") {
             event.preventDefault();
-            markCurrentLineCorrect(); // Mark current line
-            moveHighlight(1); // Move to next line
+            if (!spaceHeld) {
+                spaceHeld = true;
+                unblurCurrentLine();
+            }
+        } else if (event.key === "Enter") {
+            event.preventDefault();
+            // If space is held when Enter is pressed, mark the current line as correct.
+            if (spaceHeld) {
+                markCurrentLineCorrect();
+                spaceHeld = false; // Prevent further action on keyup.
+            }
+            // In any case, Enter moves to the next line (down).
+            moveHighlight(1);
         }
     }
 
-    // Modified moveHighlight function (from previous update)
-    function moveHighlight(direction) {
-        let lineElements = [...document.querySelectorAll(".line")].filter(line => line.innerText);
-
-        // Check if moving is within bounds.
-        if (currentLineIndex + direction >= -1 && currentLineIndex + direction < lineElements.length) {
-            // Update the current highlight index.
-            currentLineIndex += direction;
-            updateHighlightPosition();
-
-            // Determine the new target: the line immediately above the new highlight.
-            let newUnblurIndex = currentLineIndex - 1;
-            if (newUnblurIndex >= 0) {
-                // Only unblur words that are still blurred.
-                lineElements[newUnblurIndex].querySelectorAll(".blurred").forEach(word => {
-                    word.classList.remove("blurred");
-                    word.classList.add("unblurred");
-                });
+    // Handle keyup events
+    function handleKeyUp(event) {
+        if (event.key === " ") {
+            if (spaceHeld) {
+                moveHighlight(1);
+                spaceHeld = false;
+            }
+        } else if (event.key === "s") {
+            if (navDirection === 1) {
+                moveHighlight(1);
+                navDirection = 0;
+            }
+        } else if (event.key === "w") {
+            if (navDirection === -1) {
+                moveHighlight(-1);
+                navDirection = 0;
             }
         }
     }
 
+    // Moves the highlight by the specified direction (1 for down, -1 for up)
+    function moveHighlight(direction) {
+        let lineElements = [...document.querySelectorAll(".line")].filter(line => line.innerText);
+        if (currentLineIndex + direction >= -1 && currentLineIndex + direction < lineElements.length) {
+            currentLineIndex += direction;
+            updateHighlightPosition();
+        }
+    }
+
+    // Unblurs (reveals) the words in the currently highlighted line.
+    function unblurCurrentLine() {
+        let lineElements = [...document.querySelectorAll(".line")].filter(line => line.innerText);
+        if (currentLineIndex >= 0 && currentLineIndex < lineElements.length) {
+            lineElements[currentLineIndex].querySelectorAll(".blurred").forEach(word => {
+                word.classList.remove("blurred");
+                word.classList.add("unblurred");
+            });
+        }
+    }
+
+    // Updates the highlight bar's position to match the current line.
     function updateHighlightPosition() {
         let lineElements = [...document.querySelectorAll(".line")].filter(line => line.innerText);
         let lyricsContainer = document.getElementById("lyrics-container");
         let highlight = document.getElementById("highlight");
         if (currentLineIndex === -1) {
-            highlight.style.transform = `translateY(-1.5em)`; // Start above the first line
-            lyricsContainer.scrollTop = 0; // Scroll to the top
+            highlight.style.transform = `translateY(-1.5em)`; // Above the first line.
+            lyricsContainer.scrollTop = 0;
         } else if (lineElements.length > 0) {
             let targetLine = lineElements[currentLineIndex];
-            let offset = targetLine.offsetTop - lyricsContainer.offsetTop; // Calculate the top offset of the target line
-            highlight.style.transform = `translateY(${offset}px)`; // Move the highlight to the target line
+            let offset = targetLine.offsetTop - lyricsContainer.offsetTop;
+            highlight.style.transform = `translateY(${offset}px)`;
             window.scrollTo({
                 top: targetLine.offsetTop - 200,
                 left: 0,
@@ -235,6 +285,7 @@
         }
     }
 
+    // Marks the current line as correct (green) and updates the percentage.
     function markCurrentLineCorrect() {
         let lineElements = [...document.querySelectorAll(".line")].filter(line => line.innerText);
         if (currentLineIndex >= 0 && currentLineIndex < lineElements.length) {
@@ -254,7 +305,7 @@
                 let percentage = Math.round((correctCount / totalLines) * 100);
                 let indicatorSpan = document.createElement("span");
                 indicatorSpan.classList.add("correct-indicator");
-                // Updated: Only display the percentage (e.g., "70%")
+                // Display only the percentage (e.g., "70%")
                 indicatorSpan.innerHTML = `<strong>${percentage}%</strong>`;
                 currentLine.appendChild(indicatorSpan);
             }
