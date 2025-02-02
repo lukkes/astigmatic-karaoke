@@ -196,18 +196,18 @@
 
     function moveHighlight(direction) {
         let lineElements = [...document.querySelectorAll(".line")].filter(line => line.innerText);
+
+        // Check if moving is within bounds.
         if (currentLineIndex + direction >= -1 && currentLineIndex + direction < lineElements.length) {
-            if (currentLineIndex >= 0 && direction === -1) {
-                // When moving up, re-blur words in the previously highlighted line.
-                lineElements[currentLineIndex].querySelectorAll(".unblurred").forEach(word => {
-                    word.classList.remove("unblurred");
-                    word.classList.add("blurred");
-                });
-            }
+            // Update the current highlight index.
             currentLineIndex += direction;
             updateHighlightPosition();
-            if (currentLineIndex >= 0) {
-                lineElements[currentLineIndex].querySelectorAll(".blurred").forEach(word => {
+
+            // Determine the new target: the line immediately above the new highlight.
+            let newUnblurIndex = currentLineIndex - 1;
+            if (newUnblurIndex >= 0) {
+                // Only unblur words that are still blurred.
+                lineElements[newUnblurIndex].querySelectorAll(".blurred").forEach(word => {
                     word.classList.remove("blurred");
                     word.classList.add("unblurred");
                 });
