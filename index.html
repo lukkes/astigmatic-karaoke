@@ -91,7 +91,7 @@
             height: 3px;
             background: #FF33FF;
             left: 0;
-            top: 60px;
+            top: 90px;
             transform: translateY(-1.5em);
             transition: transform 0.3s ease-in-out;
         }
@@ -99,13 +99,35 @@
             background: linear-gradient(to right, #6a0dad, #a020f0, #5c4d7a);
             background: linear-gradient(to bottom, #6A0DAF, #A020F0);
         }
-        .button-primary {
-            background-color: #5E5EFF;
+        .start-button {
+            background-color: green;
             color: #FFFFFF;
             border: none;
             border-radius: 5px;
             padding: 10px 15px;
             transition: background 0.3s;
+        }
+        .reset-button {
+            background-color: red;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            transition: background 0.3s;
+        }
+        .back-button {
+            background-color: #5E5EFF;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            transition: background 0.3s;
+        }
+        .button-container {
+            display: flex;
+            position: fixed;
+            gap: 10px;
+            width: 240px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
     </style>
 </head>
@@ -123,12 +145,16 @@
 </div>
 <!-- Blurred Phase -->
 <div id="blurred-phase" class="hidden">
-    <div class="lyrics-container" id="lyrics-container">
+    <div class="button-container">
+        <button class="back-button" onclick="goBack()">Go Back</button>
+        <button class="reset-button" onclick="resetBlurredPhase()">Reset</button>
+        <button class="start-button" onclick="startSong()">Start</button>
+    </div>
+    <br>
+    <div class="lyrics-container blurred" id="lyrics-container">
         <div id="lyrics"></div>
         <div class="highlight" id="highlight"></div>
     </div>
-    <br>
-    <button class="button-primary" onclick="goBack()">Go Back</button>
 </div>
 <script>
     // Global variables
@@ -333,6 +359,34 @@
                 currentLine.appendChild(indicatorSpan);
             }
         }
+    }
+
+    function startSong() {
+        const lyricsContainer = document.getElementById("lyrics-container");
+
+        if (lyricsContainer.classList.contains("blurred")) {
+            lyricsContainer.classList.remove("blurred");
+        }
+    }
+
+    function resetBlurredPhase() {
+        currentLineIndex = -1;
+        correctCount = 0;
+        document.querySelectorAll(".line").forEach(line => {
+            line.classList.remove("correct");
+            let indicator = line.querySelector(".correct-indicator");
+            if (indicator) {
+                indicator.remove();
+            }
+            line.querySelectorAll(".unblurred").forEach(word => {
+                word.classList.remove("unblurred");
+                word.classList.add("blurred");
+            });
+        });
+        updateHighlightPosition();
+        window.scrollTo({
+            top: 0,
+        });
     }
 </script>
 </body>
