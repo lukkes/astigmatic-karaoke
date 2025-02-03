@@ -1,0 +1,143 @@
+@import url("reset.css");
+
+body {
+  font-family: 'Georgia', serif;
+  text-align: center;
+  padding: 20px;
+  height: 100%;
+  margin: 0;
+  background-color: #0c0c0c;
+  color: #ffffff;
+}
+
+.hidden {
+  display: none;
+}
+
+.lyrics-container {
+  display: inline-block;
+  text-align: left;
+  font-size: 1.5em;
+  line-height: 1.6;
+  background: #1c1c1c;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+  max-width: 800px;
+  height: calc(100% - 150px);
+  overflow-y: auto;
+  white-space: pre-wrap;
+  position: relative;
+}
+
+.blurred {
+  filter: blur(5px);
+  transition: filter 0.5s ease-in-out;
+}
+
+.unblurred {
+  filter: blur(0);
+  transition: filter 0.5s ease-in-out;
+}
+
+.correct {
+  color: #00ff00;
+}
+
+.correct-indicator {
+  font-size: 0.8em;
+  border: 1px solid #00ff00;
+  padding: 4px 6px;
+  border-radius: 3px;
+  float: right;
+}
+
+button {
+  margin-top: 10px;
+  padding: 10px 15px;
+  font-size: 1em;
+  border: none;
+  background: #5e5eff;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #3b3bff;
+}
+
+textarea {
+  width: 90%;
+  max-width: 800px;
+  height: 500px;
+  margin-top: 15px;
+  padding: 10px;
+  font-size: 1.2em;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize: none;
+  background-color: #2a2a2a;
+  color: #e0e0e0;
+}
+
+/* Container for the difficulty buttons */
+#blurButtons {
+  margin-top: 10px;
+}
+
+.line {
+  display: block;
+  transition: filter 0.5s ease-in-out;
+  padding: 5px 0;
+}
+
+.highlight {
+  position: absolute;
+  width: 100%;
+  height: 3px;
+  background: #FF33FF;
+  left: 0;
+  top: 90px;
+  transform: translateY(-1.5em);
+  transition: transform 0.3s ease-in-out;
+}
+
+.party-background {
+  background: linear-gradient(to right, #6a0dad, #a020f0, #5c4d7a);
+  background: linear-gradient(to bottom, #6A0DAF, #A020F0);
+}
+
+.start-button {
+  background-color: green;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  transition: background 0.3s;
+}
+
+.reset-button {
+  background-color: red;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  transition: background 0.3s;
+}
+
+.back-button {
+  background-color: #5E5EFF;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  transition: background 0.3s;
+}
+
+.button-container {
+  display: flex;
+  position: fixed;
+  gap: 10px;
+  width: 240px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
