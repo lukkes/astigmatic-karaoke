@@ -1,0 +1,6 @@
+{
+  "explorer.fileNesting.enabled": true,
+    "explorer.fileNesting.patterns": {
+      ".config": "package.json, svelte.config.js, vite.config.ts, tsconfig.json, .npmrc, .gitignore"
+    },
+}
