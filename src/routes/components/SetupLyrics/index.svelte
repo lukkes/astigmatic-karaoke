@@ -6,16 +6,12 @@
 	let difficulty: DifficultyModifier = $state(DIFFICULTIES.medium);
 
 	const onButtonClick = (newDifficulty: Difficulty) => (difficulty = DIFFICULTIES[newDifficulty]);
-	const onFormSubmit = () => {
-		if (!lyrics) {
-			return;
-		}
-		// TODO: Take input data and render display component
-	};
 </script>
 
 <div class="flex min-h-screen bg-base-200 px-10 pb-4 pt-8 text-center">
-	<form class="flex w-full" onsubmit={onFormSubmit}>
+	<form class="flex w-full" method="POST">
+		<input type="hidden" name="lyrics" value={lyrics} />
+		<input type="hidden" name="difficulty" value={difficulty.type} />
 		<div class="flex w-1/2 flex-col items-center">
 			<h1 class="min-h-max text-4xl font-bold">1. Paste your lyrics</h1>
 			<textarea
