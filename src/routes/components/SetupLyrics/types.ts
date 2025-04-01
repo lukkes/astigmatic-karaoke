@@ -1,7 +1,7 @@
-export type Difficulty = "easy" | "medium" | "hard" | "blind";
+import type { SongDifficulty } from "$lib/types/records";
 
 export type DifficultyModifier = {
-  type: Difficulty,
-  label: string,
-  blurPercentage: number,
-}
+	type: SongDifficulty;
+	label: string;
+	blurPercentage: number;
+};

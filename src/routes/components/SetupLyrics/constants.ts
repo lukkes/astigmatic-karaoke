@@ -1,34 +1,35 @@
-import type { Difficulty, DifficultyModifier } from "./types";
+import type { SongDifficulty } from "$lib/types/records";
+import type { DifficultyModifier } from "./types";
 
-export const DIFFICULTIES = {
-  easy: {
-    type: "easy",
-    label: "Easy",
-    blurPercentage: 0.3,
-  },
-  medium: {
-    type: "medium",
-    label: "Medium",
-    blurPercentage: 0.5,
-  },
-  hard: {
-    type: "hard",
-    label: "Hard",
-    blurPercentage: 0.75,
-  },
-  blind: {
-    type: "blind",
-    label: "Blind",
-    blurPercentage: 1,
-  },
-} satisfies Record<Difficulty, DifficultyModifier>;
+export const DIFFICULTY_MODIFIERS = {
+	easy: {
+		type: "easy",
+		label: "Easy",
+		blurPercentage: 0.3
+	},
+	medium: {
+		type: "medium",
+		label: "Medium",
+		blurPercentage: 0.5
+	},
+	hard: {
+		type: "hard",
+		label: "Hard",
+		blurPercentage: 0.75
+	},
+	blind: {
+		type: "blind",
+		label: "Blind",
+		blurPercentage: 1
+	}
+} satisfies Record<SongDifficulty, DifficultyModifier>;
 
 export const DIFFICULTY_TO_COLOR_CLASS = {
-  easy: "success",
-  medium: "warning",
-  hard: "error",
-  blind: "accent",
-}
+	easy: "success",
+	medium: "warning",
+	hard: "error",
+	blind: "accent"
+};
 
 export const DEFAULT_LYRICS = `
 Is this the real life? Is this just fantasy?
@@ -83,4 +84,4 @@ Nothing really matters, anyone can see
 Nothing really matters
 Nothing really matters to me
 Any way the wind blows
-`
+`;

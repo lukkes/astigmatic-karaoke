@@ -1,38 +1,34 @@
-interface LyricsEntry {
-	id: string;
-	content: string;
-	difficulty: string;
-	created_at: Date;
-}
+import type { Song } from "$lib/types/records";
+import type { NewSong } from "$lib/schemas/song";
 
 class MockDB {
-	private lyrics: Map<string, LyricsEntry> = new Map();
+	private songs: Map<string, Song> = new Map();
 	private counter = 0;
 
-	async createLyrics(content: string, difficulty: string): Promise<string> {
-		const id = `lyrics_${this.counter++}`;
-		const entry: LyricsEntry = {
+	async createSong(data: NewSong): Promise<string> {
+		const id = `song_${this.counter++}`;
+		const song: Song = {
 			id,
-			content,
-			difficulty,
+			lyrics: data.lyrics,
+			difficulty: data.difficulty,
 			created_at: new Date()
 		};
-		this.lyrics.set(id, entry);
+		this.songs.set(id, song);
 		return id;
 	}
 
-	async getLyrics(id: string): Promise<LyricsEntry | undefined> {
-		return this.lyrics.get(id);
+	async getSong(id: string): Promise<Song | undefined> {
+		return this.songs.get(id);
 	}
 }
 
 // Create a singleton instance
 const db = new MockDB();
 
-export async function createLyrics(content: string, difficulty: string): Promise<string> {
-	return db.createLyrics(content, difficulty);
+export async function createSong(data: NewSong): Promise<string> {
+	return db.createSong(data);
 }
 
-export async function getLyrics(id: string): Promise<LyricsEntry | undefined> {
-	return db.getLyrics(id);
+export async function getSong(id: string): Promise<Song | undefined> {
+	return db.getSong(id);
 }

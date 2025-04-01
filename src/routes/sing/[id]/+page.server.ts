@@ -1,22 +1,16 @@
-import type { Difficulty } from "../../components/SetupLyrics/types";
 import { error } from "@sveltejs/kit";
+import { getSong } from "$lib/server/db";
+import type { Song } from "$lib/types/records";
 import type { PageServerLoad } from "./$types";
-import { getLyrics } from "$lib/server/db";
 
-export type PageData = {
-	lyrics: string;
-	difficulty: Difficulty;
-};
+export type PageData = Song;
 
 export const load: PageServerLoad = async ({ params }) => {
-	const entry = await getLyrics(params.id);
+	const song = await getSong(params.id);
 
-	if (!entry) {
-		throw error(404, "Lyrics not found");
+	if (!song) {
+		throw error(404, "Song not found");
 	}
 
-	return {
-		lyrics: entry.content,
-		difficulty: entry.difficulty as Difficulty
-	};
+	return song;
 };
