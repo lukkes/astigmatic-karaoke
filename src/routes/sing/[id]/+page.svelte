@@ -3,6 +3,7 @@
 	import EyeIcon from "./icons/eye.svg?raw";
 	import EyeOffIcon from "./icons/eye-off.svg?raw";
 	import { SUBTITLE_SAMPLES } from "./constants";
+	import { processLine } from "./helpers";
 
 	let { data } = $props<{ data: PageData }>();
 	let { lyrics, difficulty, id } = $state(data);
@@ -17,7 +18,8 @@
 		.filter((line: string) => line.trim())
 		.map((line: string, index: number) => ({
 			id: `line-${index}`,
-			text: line.trim()
+			text: line.trim(),
+			blurredText: processLine(line.trim())
 		}));
 
 	let currentLineIndex = $state(0);
@@ -35,10 +37,10 @@
 	// Function to calculate the scroll position for a given line index
 	const calculateScrollPosition = (index: number) => {
 		const lineHeight = getLineHeight(index);
-		const gapHeight = 8; // The gap-2 class in Tailwind is 8px
+		const gapHeight = 16; // The gap-4 class in Tailwind is 16px
 
 		// Scroll to the line above the current line
-		return (index - 1) * (lineHeight + gapHeight);
+		return (index - 2) * (lineHeight + gapHeight);
 	};
 
 	// Handle keyboard navigation
@@ -93,19 +95,23 @@
 				class:blur-md={isBlurred}
 			>
 				<div
-					class="flex h-[168px] flex-col items-center gap-2 overflow-hidden"
+					class="flex h-[284px] flex-col items-center gap-4 overflow-hidden"
 					bind:this={containerRef}
 				>
 					{#each lyricsLines as line, i (line.id)}
 						<p
-							class="flex h-10 items-center justify-center transition-all duration-500"
-							class:text-2xl={i === currentLineIndex}
-							class:text-base={i !== currentLineIndex}
+							class="flex h-20 items-center justify-center transition-all duration-500"
+							class:text-4xl={i === currentLineIndex}
+							class:text-2xl={i !== currentLineIndex}
 							class:opacity-100={i === currentLineIndex}
 							class:opacity-50={i !== currentLineIndex}
 							bind:this={lineRefs[i]}
 						>
-							{line.text}
+							{#if i >= currentLineIndex}
+								{@html line.blurredText}
+							{:else}
+								{line.text}
+							{/if}
 						</p>
 					{/each}
 				</div>
