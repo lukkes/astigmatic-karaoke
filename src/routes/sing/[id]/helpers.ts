@@ -1,13 +1,16 @@
-// Parameter to control how many words to blur (0.0 to 1.0)
-const BLUR_RATIO = 0.3; // 30% of words will be blurred
+import { DIFFICULTY_MODIFIERS } from "$lib/constants/difficulty";
+import type { SongDifficulty } from "$lib/types/difficulty";
 
 // Function to randomly blur words in a line
-export const processLine = (line: string) => {
+export const processLine = (line: string, difficulty: SongDifficulty = "medium") => {
+	// Get the blur ratio based on difficulty
+	const blurRatio = DIFFICULTY_MODIFIERS[difficulty].blurRatio;
+
 	// Split the line into words
 	const words = line.split(/\s+/);
 
 	// Calculate how many words to blur based on the ratio
-	const numWordsToBlur = Math.max(1, Math.floor(words.length * BLUR_RATIO));
+	const numWordsToBlur = Math.max(1, Math.floor(words.length * blurRatio));
 
 	// Create a copy of the words array to avoid modifying the original
 	const processedWords = [...words];

@@ -13,13 +13,13 @@
 	let isBlurred = $state(false);
 
 	// Split lyrics into lines, remove empty lines, and add index
-	const lyricsLines = lyrics
+	const lyricsLines = `${lyrics}\n`
 		.split("\n")
 		.filter((line: string) => line.trim())
 		.map((line: string, index: number) => ({
 			id: `line-${index}`,
 			text: line.trim(),
-			blurredText: processLine(line.trim())
+			blurredText: processLine(line.trim(), difficulty)
 		}));
 
 	let currentLineIndex = $state(0);
@@ -40,7 +40,7 @@
 		const gapHeight = 16; // The gap-4 class in Tailwind is 16px
 
 		// Scroll to the line above the current line
-		return (index - 2) * (lineHeight + gapHeight);
+		return (index - 3) * (lineHeight + gapHeight);
 	};
 
 	// Handle keyboard navigation
@@ -100,7 +100,7 @@
 				>
 					{#each lyricsLines as line, i (line.id)}
 						<p
-							class="flex h-20 items-center justify-center transition-all duration-500"
+							class="flex h-20 flex-wrap items-center justify-center transition-all duration-500"
 							class:text-4xl={i === currentLineIndex}
 							class:text-2xl={i !== currentLineIndex}
 							class:opacity-100={i === currentLineIndex}

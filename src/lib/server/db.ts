@@ -1,4 +1,4 @@
-import type { Song } from "$lib/types/records";
+import type { Song } from "$lib/types/song";
 import type { NewSong } from "$lib/schemas/song";
 
 class MockDB {

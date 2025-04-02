@@ -1,6 +1,6 @@
 import { error } from "@sveltejs/kit";
 import { getSong } from "$lib/server/db";
-import type { Song } from "$lib/types/records";
+import type { Song } from "$lib/types/song";
 import type { PageServerLoad } from "./$types";
 
 export type PageData = Song;

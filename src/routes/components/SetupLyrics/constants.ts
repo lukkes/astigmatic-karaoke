@@ -1,36 +1,3 @@
-import type { SongDifficulty } from "$lib/types/records";
-import type { DifficultyModifier } from "./types";
-
-export const DIFFICULTY_MODIFIERS = {
-	easy: {
-		type: "easy",
-		label: "Easy",
-		blurPercentage: 0.3
-	},
-	medium: {
-		type: "medium",
-		label: "Medium",
-		blurPercentage: 0.5
-	},
-	hard: {
-		type: "hard",
-		label: "Hard",
-		blurPercentage: 0.75
-	},
-	blind: {
-		type: "blind",
-		label: "Blind",
-		blurPercentage: 1
-	}
-} satisfies Record<SongDifficulty, DifficultyModifier>;
-
-export const DIFFICULTY_TO_COLOR_CLASS = {
-	easy: "success",
-	medium: "warning",
-	hard: "error",
-	blind: "accent"
-};
-
 export const DEFAULT_LYRICS = `
 Is this the real life? Is this just fantasy?
 Caught in a landslide, no escape from reality

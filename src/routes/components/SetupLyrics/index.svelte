@@ -1,7 +1,8 @@
 <script lang="ts">
-	import type { SongDifficulty } from "$lib/types/records";
-	import { DEFAULT_LYRICS, DIFFICULTY_MODIFIERS, DIFFICULTY_TO_COLOR_CLASS } from "./constants";
-	import type { DifficultyModifier } from "./types";
+	import { DIFFICULTY_MODIFIERS, DIFFICULTY_TO_COLOR_CLASS } from "$lib/constants/difficulty";
+	import type { DifficultyModifier } from "$lib/types/difficulty";
+	import type { SongDifficulty } from "$lib/types/difficulty";
+	import { DEFAULT_LYRICS } from "./constants";
 
 	let lyrics = $state(DEFAULT_LYRICS.trim());
 	let difficulty: DifficultyModifier = $state(DIFFICULTY_MODIFIERS.medium);

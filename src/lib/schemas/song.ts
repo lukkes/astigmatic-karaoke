@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { SONG_DIFFICULTIES } from "$lib/types/records";
+import { SONG_DIFFICULTIES } from "$lib/constants/difficulty";
 
 export const difficultyEnum = z.enum(SONG_DIFFICULTIES);
 
