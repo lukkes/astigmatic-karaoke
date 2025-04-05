@@ -3,7 +3,7 @@ import type { NewSong } from "$lib/schemas/song";
 
 class MockDB {
 	private songs: Map<string, Song> = new Map();
-	private counter = 0;
+	private counter = 1;
 
 	async createSong(data: NewSong): Promise<string> {
 		const id = `song_${this.counter++}`;

@@ -3,6 +3,8 @@ import type { SongDifficulty } from "$lib/types/difficulty";
 
 // Function to randomly blur words in a line
 export const processLine = (line: string, difficulty: SongDifficulty = "medium") => {
+	if (!line) return "";
+
 	// Get the blur ratio based on difficulty
 	const blurRatio = DIFFICULTY_MODIFIERS[difficulty].blurRatio;
 
@@ -30,7 +32,7 @@ export const processLine = (line: string, difficulty: SongDifficulty = "medium")
 
 		// Replace the word with a blurred version
 		const originalWord = processedWords[randomIndex];
-		processedWords[randomIndex] = `<span class="blur-[8px]">${originalWord}</span>`;
+		processedWords[randomIndex] = `<span class="blur-[8px] mx-2">${originalWord}</span>`;
 	}
 
 	// Join the words back together
