@@ -97,7 +97,7 @@
 	});
 </script>
 
-<div class="flex min-h-screen bg-base-200 px-10 pb-4 pt-8 text-center">
+<div class="flex min-h-screen bg-base-200 px-10 pb-4 pt-8 text-center" data-testid="sing-page">
 	<div class="flex w-full flex-col items-center">
 		<div class="relative w-full">
 			<button
@@ -106,6 +106,7 @@
 				class:btn-ghost={!isBlurred}
 				onclick={() => (isBlurred = !isBlurred)}
 				title={isBlurred ? "Show lyrics" : "Hide lyrics"}
+				data-testid="toggle-blur-button"
 			>
 				<span class="text-base">{isBlurred ? "Start Singing" : "Stop the song"}</span>
 				<div class="h-6 w-6">
@@ -117,17 +118,19 @@
 				</div>
 			</button>
 		</div>
-		<h1 class="min-h-max text-4xl font-bold">Secret song #{songNumber}</h1>
-		<p class="mt-2 text-lg text-base-content/70">{randomSubtitle}</p>
+		<h1 class="min-h-max text-4xl font-bold" data-testid="song-title">Secret song #{songNumber}</h1>
+		<p class="mt-2 text-lg text-base-content/70" data-testid="song-subtitle">{randomSubtitle}</p>
 		<div class="mt-8 w-11/12">
 			<div
 				class="relative cursor-pointer rounded-lg bg-base-300 p-8 shadow-lg transition-all duration-300"
 				class:blur-md={isBlurred}
+				data-testid="lyrics-container"
 			>
 				<div
 					class="flex flex-col items-center gap-4 overflow-hidden"
 					style="height: calc(100vh - 20rem);"
 					bind:this={containerRef}
+					data-testid="lyrics-scroll-container"
 				>
 					{#each lyricsLines as line, i (line.id)}
 						{#if line.text}
@@ -139,6 +142,7 @@
 								class:opacity-50={i !== currentLineIndex}
 								class:text-nowrap={i >= currentLineIndex}
 								bind:this={lineRefs[i]}
+								data-testid={`lyrics-line-${i}`}
 							>
 								{#if i >= currentLineIndex}
 									{@html line.blurredText}
@@ -147,18 +151,26 @@
 								{/if}
 							</p>
 						{:else}
-							<div class="flex h-20 items-center justify-center">&nbsp;</div>
+							<div class="flex h-20 items-center justify-center" data-testid={`empty-line-${i}`}>
+								&nbsp;
+							</div>
 						{/if}
 					{/each}
 				</div>
 			</div>
 			{#if !isBlurred}
-				<div class="mt-8 flex w-full items-center justify-center gap-4">
-					<p class="text-lg font-semibold">Press space to advance lyrics</p>
+				<div
+					class="mt-8 flex w-full items-center justify-center gap-4"
+					data-testid="controls-container"
+				>
+					<p class="text-lg font-semibold" data-testid="instructions">
+						Press space to advance lyrics
+					</p>
 					<button
 						class="btn btn-outline btn-error btn-sm"
 						onclick={resetLyrics}
 						title="Reset to beginning"
+						data-testid="reset-button"
 					>
 						Reset
 					</button>
