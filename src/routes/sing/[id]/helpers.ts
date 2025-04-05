@@ -2,7 +2,7 @@ import { DIFFICULTY_MODIFIERS } from "$lib/constants/difficulty";
 import type { SongDifficulty } from "$lib/types/difficulty";
 
 // Function to randomly blur words in a line
-export const processLine = (line: string, difficulty: SongDifficulty = "medium") => {
+export const processLine = (line: string, difficulty: SongDifficulty) => {
 	if (!line) return "";
 
 	// Get the blur ratio based on difficulty

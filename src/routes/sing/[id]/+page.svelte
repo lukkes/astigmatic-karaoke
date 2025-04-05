@@ -14,9 +14,8 @@
 
 	const songNumber = id.split("_")[1];
 	const randomSubtitle = SUBTITLE_SAMPLES[Math.floor(Math.random() * SUBTITLE_SAMPLES.length)];
-	let isBlurred = $state(false);
 
-	// Split lyrics into lines, remove empty lines, and add index
+	// Split lyrics into lines, remove empty lines, and add unique id
 	const lyricsLines = `${lyrics}\n`.split("\n").map((line: string, index: number) => {
 		const trimmedLine = line.trim();
 
@@ -29,12 +28,13 @@
 
 	let lastScrollPosition = $state(0);
 	let currentLineIndex = $state(0);
+	let isBlurred = $state(false);
 	let containerRef: HTMLDivElement;
 	let lineRefs: HTMLParagraphElement[] = $state([]);
 
 	// Function to get the actual height of a line element
 	const getLineHeight = (index: number = 0) => {
-		// If line is empty, return the default line height
+		// If line is empty (such as newlines), return the default line height
 		if (!lineRefs[index]) {
 			return DEFAULT_LINE_HEIGHT;
 		}
