@@ -75,6 +75,19 @@
 		}
 	};
 
+	// Reset function to go back to the beginning
+	const resetLyrics = () => {
+		currentLineIndex = 0;
+		lastScrollPosition = 0;
+
+		if (containerRef) {
+			containerRef.scrollTo({
+				top: 0,
+				behavior: "smooth"
+			});
+		}
+	};
+
 	// Add and remove event listener
 	$effect(() => {
 		window.addEventListener("keydown", handleKeydown);
@@ -88,15 +101,20 @@
 	<div class="flex w-full flex-col items-center">
 		<div class="relative w-full">
 			<button
-				class="btn btn-circle btn-ghost btn-sm absolute right-0 top-0"
+				class="btn absolute right-16 top-2 gap-2"
+				class:btn-outline={isBlurred}
+				class:btn-ghost={!isBlurred}
 				onclick={() => (isBlurred = !isBlurred)}
 				title={isBlurred ? "Show lyrics" : "Hide lyrics"}
 			>
-				{#if isBlurred}
-					{@html EyeIcon}
-				{:else}
-					{@html EyeOffIcon}
-				{/if}
+				<span class="text-base">{isBlurred ? "Start Singing" : "Stop the song"}</span>
+				<div class="h-6 w-6">
+					{#if isBlurred}
+						{@html EyeIcon}
+					{:else}
+						{@html EyeOffIcon}
+					{/if}
+				</div>
 			</button>
 		</div>
 		<h1 class="min-h-max text-4xl font-bold">Secret song #{songNumber}</h1>
@@ -135,8 +153,15 @@
 				</div>
 			</div>
 			{#if !isBlurred}
-				<div class="mt-8 flex w-full items-center justify-center">
+				<div class="mt-8 flex w-full items-center justify-center gap-4">
 					<p class="text-lg font-semibold">Press space to advance lyrics</p>
+					<button
+						class="btn btn-outline btn-error btn-sm"
+						onclick={resetLyrics}
+						title="Reset to beginning"
+					>
+						Reset
+					</button>
 				</div>
 			{/if}
 		</div>
